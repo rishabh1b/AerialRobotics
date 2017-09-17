@@ -10,10 +10,15 @@ acc = [0; 0; 0];
 yaw = 0;
 yawdot = 0;
 
-vmax = 0.35;
-amax = 0.1;
-t_interval = (vmax / amax);
-tmax = 3 * t_interval;
+z = 2.5;
+
+total_time = 14;
+t_interval = total_time / 3;
+
+vmax = z / (2 * t_interval);
+amax = vmax / (t_interval);
+
+tmax = total_time;
 num_circles = 1;
 omega = 2 * pi * num_circles / (tmax);
 A = 5;
