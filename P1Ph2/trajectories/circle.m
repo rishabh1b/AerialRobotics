@@ -10,8 +10,8 @@ acc = [0; 0; 0];
 yaw = 0;
 yawdot = 0;
 
-vmax = 0.4;
-amax = 0.12;
+vmax = 0.35;
+amax = 0.1;
 t_interval = (vmax / amax);
 tmax = 3 * t_interval;
 num_circles = 1;
