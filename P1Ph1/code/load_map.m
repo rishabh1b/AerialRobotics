@@ -22,22 +22,24 @@ fclose(fileID);
 %% START YOUR CODE HERE %%
 % Get the Boundary
 num_blocks = size(fileDat{1}, 1);
-xmin = fileDat{2}(1);
-ymin = fileDat{3}(1);
-zmin = fileDat{4}(1);
-
-xmax = fileDat{5}(1);
-ymax = fileDat{6}(1);
-zmax = fileDat{7}(1);
-
 % Get the Blocks
 blocks = zeros(num_blocks-1, 9);
 j = 1;
-for i = 2:num_blocks
-    blocks(j,:) = [fileDat{2}(i) fileDat{3}(i) fileDat{4}(i) fileDat{5}(i) ...
-                   fileDat{6}(i) fileDat{7}(i) fileDat{8}(i) fileDat{9}(i) ...
-                   fileDat{10}(i)];
-   j = j + 1;
+for i = 1:num_blocks
+    if size(cell2mat(fileDat{1}(i)),2) > 5 %Boundary
+        xmin = fileDat{2}(i);
+        ymin = fileDat{3}(i);
+        zmin = fileDat{4}(i);
+
+        xmax = fileDat{5}(i);
+        ymax = fileDat{6}(i);
+        zmax = fileDat{7}(i);
+    else
+        blocks(j,:) = [fileDat{2}(i) fileDat{3}(i) fileDat{4}(i) fileDat{5}(i) ...
+                       fileDat{6}(i) fileDat{7}(i) fileDat{8}(i) fileDat{9}(i) ...
+                       fileDat{10}(i)];
+        j = j + 1;
+    end
 end
  
 % Inflate the Blocks
@@ -88,5 +90,4 @@ map{5} = xy_res;
 map{6} = z_res;
 map{7} = blocks; % For Rendering
 %% END YOUR CODE HERE %%
-
 end
