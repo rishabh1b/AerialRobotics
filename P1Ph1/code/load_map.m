@@ -22,6 +22,12 @@ fclose(fileID);
 %% START YOUR CODE HERE %%
 % Get the Boundary
 num_blocks = size(fileDat{1}, 1);
+
+if num_blocks == 0
+    map = [];
+    return;
+end
+
 % Get the Blocks
 blocks = zeros(num_blocks-1, 9);
 j = 1;

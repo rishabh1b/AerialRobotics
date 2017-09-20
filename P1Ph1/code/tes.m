@@ -1,4 +1,4 @@
-map = load_map('sample_maps/map4.txt', 0.1, 1, 0.3);
+map = load_map('sample_maps/map0.txt', 0.1, 1, 0.3);
 %%
 start = [1 1 1];
 goal = [5 10 4];
@@ -7,4 +7,5 @@ goal = [5 10 4];
 tic
 [path, numexpanded] = dijkstra(map, start, goal,1);
 toc
+%% Plot?
 plot_path(map, path);

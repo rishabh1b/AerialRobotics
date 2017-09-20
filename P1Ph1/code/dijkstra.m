@@ -22,6 +22,12 @@ end
 %% START YOUR CODE HERE %%
 % keep track of the number of nodes that are expanded
 num_expanded = 0;
+
+if isempty(map)
+    path = [];
+    return;
+end
+
 xmin = map{2}(1);
 ymin = map{3}(1);
 zmin = map{4}(1);
