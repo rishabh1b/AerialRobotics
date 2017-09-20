@@ -23,7 +23,7 @@ end
 % keep track of the number of nodes that are expanded
 num_expanded = 0;
 
-if isempty(map)
+if isempty(map) || numel(start) ~= 3 || numel(goal) ~= 3
     path = [];
     return;
 end
