@@ -15,15 +15,12 @@ z = 2.5;
 total_time = 12;
 t_interval = total_time / 3;
 
-%vmax = z / (2 * t_interval);
-%amax = vmax / (t_interval);
 num_circles = 1;
 
 wmax = (3 * pi) * num_circles /  (total_time);
 alphamax = wmax / t_interval;
 
 tmax = total_time;
-%omega = 2 * pi * num_circles / (tmax);
 A = 5;
 dt = 0.0001;
     function pos = getPose(angle)
@@ -51,16 +48,12 @@ dt = 0.0001;
         vel = (pos_2 - pos_1) / dt;
     end  
 
-buffer = 1;
-t_init = buffer;
-t_last = tmax - buffer;
-
-C_start = [-3.4805, 4.5023, 1, 0];
-C_end =  1.0e+03 *[
-    0.0035
-   -0.1417
-    1.9195
-   -8.6541];
+% This approach resorts to basic differentiation to get the velocity and 
+% acceleration on the circle. The angular velocity and linear velocity 
+% across z both are given a trapezoidal velocity profile. 
+% The trapezoidal velocity profile for angular velocity ensures that we
+% start at rest and end at rest preventing overshoot at the end. 
+% This was not possible to achieve with direct sine and cosine function
 
 if t < tmax
     angle = getAngleFromTrapzProfile(t);
@@ -73,21 +66,59 @@ else
     acc = zeros(3,1);
 end
 
-% if t <= t_init
-%    pos(2) = A * sin(omega * t);
-%    vel(2) = polyval(C_start', t);
-%    acc(2) = polyval(polyder(C_start'), t); 
-if t < t_last
-    pos(2) = A * sin(omega * t);
-    vel(2) = A * omega * cos(omega * t);
-    acc(2) = -A * omega^2 * sin(omega * t);
-elseif t >= t_last && t < tmax
-   pos(2) = A * sin(omega * t);
-   vel(2) = polyval(C_end, t);
-   acc(2) = polyval(polyder(C_end), t);
-end
 
+%%% Earlier Approach of taking sines and cosines to approximate the
+%%% trajectory. This approach causes overshoot at the end because the
+%%% velocity is not zero at t_end.
 
+% z = 2.5;
+% 
+% total_time = 14;
+% t_interval = total_time / 3;
+% 
+% vmax = z / (2 * t_interval);
+% amax = vmax / (t_interval);
+% 
+% tmax = total_time;
+% num_circles = 1;
+% omega = 2 * pi * num_circles / (tmax);
+% A = 5;
+% 
+% if t <= tmax / 3
+%     pos(3) = 0.5 * amax * (t ^ 2);
+%     vel(3) = amax * t;
+%     acc(3) = amax;
+% elseif t <= 2 * tmax / 3
+%     deltat = t - tmax/3;
+%     pos(3) = (vmax^2) / (2 * amax) + vmax * deltat;
+%     vel(3) = vmax;
+%     acc(3) = 0;
+% elseif t <= tmax
+%     deltat = t - 2 * tmax / 3;
+%     pos(3) = 3 * (vmax^2) / (2 * amax) + vmax*deltat - 0.5*amax*deltat^2;
+%     vel(3) = vmax - amax * deltat;
+%     acc(3) = -amax;
+% else
+%     vel(3) = 0;
+%     acc(3) = 0;
+%     pos(3) = 2*(vmax^2)/amax;
+% end
+% 
+% if t < tmax
+%     pos(1) = A * cos(omega * t);
+%     vel(1) = -A * omega * sin(omega * t);
+%     acc(1) = -A * omega^2 * cos(omega * t);
+%     pos(2) = A * sin(omega * t);
+%     vel(2) = A * omega * cos(omega * t);
+%     acc(2) = -A * omega^2 * sin(omega * t);
+% else
+%     vel(1) = 0;
+%     acc(1) = 0;
+%     vel(2) = 0;
+%     acc(2) = 0;
+%     pos(1) = A * cos(omega * tmax);
+%     pos(2) = A * sin(omega * tmax);
+% end
 % =================== Your code ends here ===================
 
 desired_state.pos = pos(:);
