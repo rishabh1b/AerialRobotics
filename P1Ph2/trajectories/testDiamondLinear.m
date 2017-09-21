@@ -1,4 +1,6 @@
 %% TestDiamondLinear and Smoothing
+% We try to fit polynomials using polyfit after sampling
+% from the linear velocity profile
 t_int = 1;
 p  = 1;
 tstep = 4*t_int/100;
