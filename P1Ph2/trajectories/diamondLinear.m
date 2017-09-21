@@ -1,4 +1,6 @@
 function [x, y, z] = diamondLinear(t, p, t_int)
+% Trial function to fit linear trajectories for diamond
+% Function is not used in the final implementation
 if t <= 4 * t_int
     x = 0.25 * t;
 else
