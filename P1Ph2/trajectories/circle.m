@@ -43,21 +43,46 @@ else
     pos(3) = 2*(vmax^2)/amax;
 end
 
+buffer = 1;
+t_init = buffer;
+t_last = tmax - buffer;
+
+C_start = [-3.4805, 4.5023, 1, 0];
+C_end =  1.0e+03 *[
+    0.0035
+   -0.1417
+    1.9195
+   -8.6541];
+
 if t < tmax
     pos(1) = A * cos(omega * t);
     vel(1) = -A * omega * sin(omega * t);
     acc(1) = -A * omega^2 * cos(omega * t);
+    
+else
+    vel(1) = 0;
+    acc(1) = 0;   
+    pos(1) = A * cos(omega * tmax);
+    vel(2) = 0;
+    acc(2) = 0;
+    pos(2) = A * sin(omega * tmax);
+end
+
+% if t <= t_init
+%    pos(2) = A * sin(omega * t);
+%    vel(2) = polyval(C_start', t);
+%    acc(2) = polyval(polyder(C_start'), t); 
+if t < t_last
     pos(2) = A * sin(omega * t);
     vel(2) = A * omega * cos(omega * t);
     acc(2) = -A * omega^2 * sin(omega * t);
-else
-    vel(1) = 0;
-    acc(1) = 0;
-    vel(2) = 0;
-    acc(2) = 0;
-    pos(1) = A * cos(omega * tmax);
-    pos(2) = A * sin(omega * tmax);
+elseif t >= t_last && t < tmax
+   pos(2) = A * sin(omega * t);
+   vel(2) = polyval(C_end, t);
+   acc(2) = polyval(polyder(C_end), t);
 end
+
+
 % =================== Your code ends here ===================
 
 desired_state.pos = pos(:);
