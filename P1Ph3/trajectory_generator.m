@@ -20,21 +20,27 @@ function [ desired_state ] = trajectory_generator(t, qn, map, path)
 % persistent map0 path0
 % map0 = map;
 % path0 = path;
-persistent waypoints0 traj_time d0 coeffsX coeffsY coeffsZ map0 path0
+persistent waypoints0 traj_time d0 coeffsX coeffsY coeffsZ map0 path0 
+persistent polyorder ordersystem numcoeffs
 
 if nargin > 2
     map0 = map;
     path0 = path;
-    waypoints = path0{1};
-    [m,~] = size(waypoints);
-    waypoints = waypoints(1:100:m,:);
-    waypoints = waypoints';
-    d = waypoints(:,2:end) - waypoints(:,1:end-1);
-    d0 = 2 * sqrt(d(1,:).^2 + d(2,:).^2 + d(3,:).^2);
-    traj_time = [0, cumsum(d0)];
+    averagevelocity = 2;
+    waypoints = refinePath(path0{1}, map0);
+    figure(1)
+    hold on
+    plot3(waypoints(:,1), waypoints(:,2), waypoints(:,3), 'LineWidth', 3)
+    d = waypoints(2:end,:) - waypoints(1:end-1,:);
+    d0 = (sqrt(d(:,1).^2 + d(:,2).^2 + d(:,3).^2)) ./ averagevelocity;
+    traj_time = [0, cumsum(d0')];
     waypoints0 = waypoints;
-    num_waypoints = size(waypoints0,2);
-   [coeffsX,coeffsY,coeffsZ] = getCoeffs(7,4,num_waypoints - 1,waypoints0');
+    num_waypoints = size(waypoints0,1);
+    polyorder = 7;
+    ordersystem = 4;
+    numcoeffs = polyorder + 1;
+   [coeffsX,coeffsY,coeffsZ] = getCoeffs(polyorder,ordersystem,num_waypoints - 1,waypoints0);
+   CheckPolynomial(coeffsX,coeffsY, coeffsZ, numcoeffs);
 else
     if(t > traj_time(end))
         t = traj_time(end) - 0.0001;    
@@ -47,20 +53,20 @@ else
     desired_state.pos = zeros(3,1);
     desired_state.vel = zeros(3,1);
     desired_state.acc = zeros(3,1);
-    lowPos = 1 + 8 * (t_index-1);
-    highPos = 8 * (t_index);
+    lowPos = 1 + (polyorder + 1) * (t_index-1);
+    highPos = (polyorder + 1) * (t_index);
     %Simple matrix product between Transposes of the two matrices could have done the same thing. 
-    desired_state.pos = [sum(coeffsX(lowPos:highPos,1) .* (DerivativeCoefficents(8,0,scale))');...
-                        sum(coeffsY(lowPos:highPos,1) .* (DerivativeCoefficents(8,0,scale))');...
-                        sum(coeffsZ(lowPos:highPos,1) .* (DerivativeCoefficents(8,0,scale))');...
+    desired_state.pos = [sum(coeffsX(lowPos:highPos,1) .* (DerivativeCoefficents(numcoeffs,0,scale))');...
+                        sum(coeffsY(lowPos:highPos,1) .* (DerivativeCoefficents(numcoeffs,0,scale))');...
+                        sum(coeffsZ(lowPos:highPos,1) .* (DerivativeCoefficents(numcoeffs,0,scale))');...
                         ];
-    desired_state.vel = [sum(coeffsX(lowPos:highPos,1) .* (DerivativeCoefficents(8,1,scale))');...
-                        sum(coeffsY(lowPos:highPos,1) .* (DerivativeCoefficents(8,1,scale))');...
-                        sum(coeffsZ(lowPos:highPos,1) .* (DerivativeCoefficents(8,1,scale))');...
+    desired_state.vel = [sum(coeffsX(lowPos:highPos,1) .* (DerivativeCoefficents(numcoeffs,1,scale))');...
+                        sum(coeffsY(lowPos:highPos,1) .* (DerivativeCoefficents(numcoeffs,1,scale))');...
+                        sum(coeffsZ(lowPos:highPos,1) .* (DerivativeCoefficents(numcoeffs,1,scale))');...
                          ] ./ d0(t_index);
-    desired_state.acc = [sum(coeffsX(lowPos:highPos,1) .* (DerivativeCoefficents(8,2,scale))');...
-                        sum(coeffsY(lowPos:highPos,1) .* (DerivativeCoefficents(8,2,scale))');...
-                        sum(coeffsZ(lowPos:highPos,1) .* (DerivativeCoefficents(8,2,scale))');...
+    desired_state.acc = [sum(coeffsX(lowPos:highPos,1) .* (DerivativeCoefficents(numcoeffs,2,scale))');...
+                        sum(coeffsY(lowPos:highPos,1) .* (DerivativeCoefficents(numcoeffs,2,scale))');...
+                        sum(coeffsZ(lowPos:highPos,1) .* (DerivativeCoefficents(numcoeffs,2,scale))');...
                          ] ./ ((d0(t_index)) ^ 2);
     desired_state.yaw = 0;
     desired_state.yawdot = 0;
