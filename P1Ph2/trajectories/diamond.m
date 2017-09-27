@@ -14,7 +14,7 @@ total_dist_x = 1;
 p = 1;
 
 % Splitting total time into four intervals
-t_total = 13 * p;
+t_total = 11 * p;
 
 t_interval = t_total / 4;
 
