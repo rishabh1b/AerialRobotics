@@ -11,34 +11,36 @@ function [coeffsX,coeffsY,coeffsZ] = getCoeffs(orderPoly,orderSystem,numberpoly,
 %FurtherMore all the trajectories are applicable with the assumption that
 %time taken to travel each polynomial has been scaled between 0 and 1.
 
-coeffEachPoly = orderPoly + 1;
-constraints = numberpoly * coeffEachPoly;
+numcoeffEachPoly = orderPoly + 1;
+constraints = numberpoly * numcoeffEachPoly;
 A = zeros(constraints,constraints);
 currentRow = 1;
 currentCol = 1;
 %Each poly should pass through the starting waypoint
+coeffstzero = DerivativeCoefficents(numcoeffEachPoly , 0 , 0);
 for i = 1 : numberpoly
-    A(currentRow,currentCol:currentCol + orderPoly) = DerivativeCoefficents(coeffEachPoly , 0 , 0);
+    A(currentRow,currentCol:currentCol + orderPoly) = coeffstzero;
     currentRow = currentRow + 1;
-    currentCol = currentCol + coeffEachPoly;
+    currentCol = currentCol + numcoeffEachPoly;
 end
 currentCol = 1;
 
 %Each poly should pass through the ending waypoint
+coeffstone = DerivativeCoefficents(numcoeffEachPoly, 0 , 1);
 for i = 1 : numberpoly
-A(currentRow,currentCol:currentCol + orderPoly) = DerivativeCoefficents(coeffEachPoly, 0 , 1);
+A(currentRow,currentCol:currentCol + orderPoly) = coeffstone;
 currentRow = currentRow + 1;
-currentCol = currentCol + coeffEachPoly;
+currentCol = currentCol + numcoeffEachPoly;
 end
 %currentCol = 1;
 
 %It should be continuous till (orderPoly - 1) derivative
 for i = 1:(numberpoly - 1)
 	for j = 1 : (orderPoly - 1)
-        currentCol = 1 + coeffEachPoly * (i - 1);
-		A(currentRow,currentCol:currentCol + orderPoly) = DerivativeCoefficents(coeffEachPoly , j , 1);
-		currentCol = currentCol + coeffEachPoly;
-		A(currentRow,currentCol:currentCol + orderPoly) = -DerivativeCoefficents(coeffEachPoly , j , 0);
+        currentCol = 1 + numcoeffEachPoly * (i - 1);
+		A(currentRow,currentCol:currentCol + orderPoly) = DerivativeCoefficents(numcoeffEachPoly , j , 1);
+		currentCol = currentCol + numcoeffEachPoly;
+		A(currentRow,currentCol:currentCol + orderPoly) = -DerivativeCoefficents(numcoeffEachPoly , j , 0);
 		currentRow = currentRow + 1;
 	end
 end
@@ -46,13 +48,13 @@ end
 %Start and stop at rest
 currentCol = 1;
 for i=1 : (orderSystem - 1)
-	A(currentRow,currentCol:currentCol + orderPoly) = DerivativeCoefficents(coeffEachPoly,i,0);
+	A(currentRow,currentCol:currentCol + orderPoly) = DerivativeCoefficents(numcoeffEachPoly,i,0);
 	currentRow = currentRow + 1;
 end
 
-currentCol = numberpoly * coeffEachPoly - orderPoly;
+currentCol = numberpoly * numcoeffEachPoly - orderPoly;
 for i= 1 : (orderSystem - 1)
-	A(currentRow,currentCol:currentCol + orderPoly) = DerivativeCoefficents(coeffEachPoly,i,1);
+	A(currentRow,currentCol:currentCol + orderPoly) = DerivativeCoefficents(numcoeffEachPoly,i,1);
 	currentRow = currentRow + 1;
 end
 %display(A);

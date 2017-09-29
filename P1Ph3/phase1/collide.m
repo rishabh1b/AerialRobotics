@@ -14,7 +14,7 @@ else
 xq = points(:,1);
 yq = points(:,2);
 zq = points(:,3);
-blocks = map{7};
+blocks = map{8};
 num_blocks = size(blocks,1);
 n = size(points,1);
 C = false(n,1);

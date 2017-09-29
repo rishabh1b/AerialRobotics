@@ -94,5 +94,6 @@ map{4} = zmin:z_res:zmax;
 map{5} = xy_res;
 map{6} = z_res;
 map{7} = blocks; % For Rendering
+map{8} = inflated_blocks; %For Collision checking
 %% END YOUR CODE HERE %%
 end

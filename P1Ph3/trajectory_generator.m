@@ -35,12 +35,12 @@ if nargin > 2
     d0 = (sqrt(d(:,1).^2 + d(:,2).^2 + d(:,3).^2)) ./ averagevelocity;
     traj_time = [0, cumsum(d0')];
     waypoints0 = waypoints;
-    num_waypoints = size(waypoints0,1);
     polyorder = 7;
     ordersystem = 4;
     numcoeffs = polyorder + 1;
    [coeffsX,coeffsY,coeffsZ] = getCoeffs(polyorder,ordersystem,num_waypoints - 1,waypoints0);
-   CheckPolynomial(coeffsX,coeffsY, coeffsZ, numcoeffs);
+   % Utility function to visualize the polynomial fitted.
+   CheckPolynomial(coeffsX,coeffsY, coeffsZ, numcoeffs, num_waypoints - 1);
 else
     if(t > traj_time(end))
         t = traj_time(end) - 0.0001;    

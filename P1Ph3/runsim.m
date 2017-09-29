@@ -7,8 +7,12 @@ addpath(genpath('./'));
 disp('Planning ...');
 map = load_map('maps/map1.txt', 0.1, 2.0, 0.25);
 start = {[0.0  -4.9 0.2]};
-%stop  = {[6.0  18.0-6 3.0]};
-stop  = {[6.0  17 4.0]};
+stop  = {[6.0  18.0-6 3.0]};
+%stop  = {[6.0  17 4.0]};
+% map = load_map('maps/map3.txt', 0.1, 1.0, 0.1);
+% start = {[2  2 2]};
+% stop  = {[17  2 2]};
+%stop  = {[7.8  2 4]};
 nquad = length(start);
 for qn = 1:nquad
     path{qn} = dijkstra(map, start{qn}, stop{qn}, true);
