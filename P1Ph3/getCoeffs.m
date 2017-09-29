@@ -1,4 +1,4 @@
-function [coeffsX,coeffsY,coeffsZ] = getCoeffs(orderPoly,orderSystem,numberpoly,waypoints)
+function [coeffsX,coeffsY,coeffsZ] = getCoeffs(orderPoly,orderSystem,numberpoly,waypoints, d0)
 %getCoeffs generates the unknown co-efficients for all the piece-wise
 %polynomials.
 %orderPoly - Order of the polynomial we are trying to fit
@@ -38,9 +38,9 @@ end
 for i = 1:(numberpoly - 1)
 	for j = 1 : (orderPoly - 1)
         currentCol = 1 + numcoeffEachPoly * (i - 1);
-		A(currentRow,currentCol:currentCol + orderPoly) = DerivativeCoefficents(numcoeffEachPoly , j , 1);
+		A(currentRow,currentCol:currentCol + orderPoly) = (DerivativeCoefficents(numcoeffEachPoly , j , 1)) ./(d0(i)^j) ;
 		currentCol = currentCol + numcoeffEachPoly;
-		A(currentRow,currentCol:currentCol + orderPoly) = -DerivativeCoefficents(numcoeffEachPoly , j , 0);
+		A(currentRow,currentCol:currentCol + orderPoly) = -(DerivativeCoefficents(numcoeffEachPoly , j , 0)) ./(d0(i + 1)^j);
 		currentRow = currentRow + 1;
 	end
 end
@@ -48,13 +48,13 @@ end
 %Start and stop at rest
 currentCol = 1;
 for i=1 : (orderSystem - 1)
-	A(currentRow,currentCol:currentCol + orderPoly) = DerivativeCoefficents(numcoeffEachPoly,i,0);
+	A(currentRow,currentCol:currentCol + orderPoly) = DerivativeCoefficents(numcoeffEachPoly,i,0) ./(d0(1)^i);
 	currentRow = currentRow + 1;
 end
 
 currentCol = numberpoly * numcoeffEachPoly - orderPoly;
 for i= 1 : (orderSystem - 1)
-	A(currentRow,currentCol:currentCol + orderPoly) = DerivativeCoefficents(numcoeffEachPoly,i,1);
+	A(currentRow,currentCol:currentCol + orderPoly) = DerivativeCoefficents(numcoeffEachPoly,i,1) ./(d0(end)^i);
 	currentRow = currentRow + 1;
 end
 %display(A);
