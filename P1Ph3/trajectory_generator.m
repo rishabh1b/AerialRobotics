@@ -20,26 +20,33 @@ function [ desired_state ] = trajectory_generator(t, qn, map, path)
 % persistent map0 path0
 % map0 = map;
 % path0 = path;
-persistent waypoints0 traj_time d0 coeffsX coeffsY coeffsZ map0 path0 
+persistent waypoints0 traj_time d0 eachPolyTime coeffsX coeffsY coeffsZ map0 path0 
 persistent polyorder ordersystem numcoeffs
 
 if nargin > 2
     map0 = map;
     path0 = path;
     averagevelocity = 2;
-    waypoints = refinePath(path0{1}, map0);
+    waypoints = refinePath2(path0{1}, map0);
     figure(1)
     hold on
     plot3(waypoints(:,1), waypoints(:,2), waypoints(:,3), 'LineWidth', 3)
     d = waypoints(2:end,:) - waypoints(1:end-1,:);
-    d0 = (sqrt(d(:,1).^2 + d(:,2).^2 + d(:,3).^2)) ./ averagevelocity;
-    traj_time = [0, cumsum(d0')];
+    d0 = (sqrt(d(:,1).^2 + d(:,2).^2 + d(:,3).^2));
+    total_dist = sum(d0);
+    total_time = total_dist / averagevelocity;
+    waypoint_seg_len = sqrt(d0);
+    traj_time = cumsum(waypoint_seg_len);
+    traj_time = traj_time/traj_time(end);
+    traj_time = [0; traj_time]';
+    traj_time = traj_time*total_time;   
+    eachPolyTime = traj_time(1,2:end) - traj_time(1,1:end-1);
     waypoints0 = waypoints;
     num_waypoints = size(waypoints,1);
     polyorder = 5;
     ordersystem = 3;
     numcoeffs = polyorder + 1;
-   [coeffsX,coeffsY,coeffsZ] = getCoeffs(polyorder,ordersystem,num_waypoints - 1,waypoints0, d0);
+   [coeffsX,coeffsY,coeffsZ] = getCoeffs(polyorder,ordersystem,num_waypoints - 1,waypoints0, eachPolyTime);
    % Utility function to visualize the polynomial fitted.
    CheckPolynomial(coeffsX,coeffsY, coeffsZ, numcoeffs, num_waypoints - 1);
 else
@@ -50,7 +57,7 @@ else
     if (t_index == 0) 
         t_index = 1; 
     end
-    scale = (t-traj_time(t_index)) / d0(t_index);
+    scale = (t-traj_time(t_index)) / eachPolyTime(t_index);
     desired_state.pos = zeros(3,1);
     desired_state.vel = zeros(3,1);
     desired_state.acc = zeros(3,1);
@@ -64,11 +71,11 @@ else
     desired_state.vel = [sum(coeffsX(lowPos:highPos,1) .* (DerivativeCoefficents(numcoeffs,1,scale))');...
                         sum(coeffsY(lowPos:highPos,1) .* (DerivativeCoefficents(numcoeffs,1,scale))');...
                         sum(coeffsZ(lowPos:highPos,1) .* (DerivativeCoefficents(numcoeffs,1,scale))');...
-                         ] ./ d0(t_index);
+                         ] ./ eachPolyTime(t_index);
     desired_state.acc = [sum(coeffsX(lowPos:highPos,1) .* (DerivativeCoefficents(numcoeffs,2,scale))');...
                         sum(coeffsY(lowPos:highPos,1) .* (DerivativeCoefficents(numcoeffs,2,scale))');...
                         sum(coeffsZ(lowPos:highPos,1) .* (DerivativeCoefficents(numcoeffs,2,scale))');...
-                         ] ./ ((d0(t_index)) ^ 2);
+                         ] ./ ((eachPolyTime(t_index)) ^ 2);
     desired_state.yaw = 0;
     desired_state.yawdot = 0;
 end
