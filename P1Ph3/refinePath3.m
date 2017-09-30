@@ -10,6 +10,7 @@ firstpoint = path(1,:);
 secondpoint = path(2,:);
 
 num_points = size(path,1);
+thresh_dist = 3.5;
 
 dir_1 = (secondpoint - firstpoint);
 dir_1 = dir_1 ./ norm(dir_1);
@@ -19,6 +20,7 @@ found = false;
 %skiponce = false;
 firstIndexAdded = false;
 firstindex = 1;
+lastIndexAdded = 1;
 while i < num_points
     if i+1 ~= num_points
         dir_2 = path(i+1,:) - path(i,:);
@@ -39,12 +41,15 @@ while i < num_points
     if found
         chosenIndex = floor((firstindex + secondindex) / 2);
         if chosenIndex ~= firstindex && isCollision(waypoints(end,:),path(chosenIndex,:))
-            waypoints = [waypoints;path(firstindex,:)];
+            %waypoints = [waypoints;path(firstindex,:)];
+            addWaypoint(firstindex);
         elseif chosenIndex ~= firstindex            
-            waypoints = [waypoints;path(chosenIndex,:)];
+%             waypoints = [waypoints;path(chosenIndex,:)];
+              addWaypoint(chosenIndex);
         elseif chosenIndex ~= 1 && ~firstIndexAdded
             waypoints = [waypoints;path(firstindex,:)];
             firstIndexAdded = true;
+            lastIndexAdded = firstindex;
         else
             firstIndexAdded = false;
         end
@@ -56,6 +61,15 @@ while i < num_points
 end
 waypoints = [waypoints;path(end,:)];
 
+function addWaypoint(index)
+    if distance(path(lastIndexAdded,:), path(index,:)) > thresh_dist
+        addOneMoreIndex = floor((lastIndexAdded + index) / 2);
+        waypoints = [waypoints;path(addOneMoreIndex,:)];
+    end
+    waypoints = [waypoints;path(index,:)];
+    lastIndexAdded = index;
+end
+
 function flag = isCollision(firstPoint, endPoint)
         xy_dist = sqrt((firstPoint(1) - endPoint(1))^2 + (firstPoint(2) - endPoint(2))^2);
         z_dist = abs(endPoint(3) - firstPoint(3));
@@ -64,5 +78,9 @@ function flag = isCollision(firstPoint, endPoint)
                             linspace(firstPoint(2), endPoint(2),numPoints);
                             linspace(firstPoint(3), endPoint(3),numPoints);];
         flag = any(collide(map,pointsToBeTested') == true);
+end
+
+function dist = distance(p1,p2)
+        dist = sqrt((p2(1) - p1(1))^2 + (p2(2) - p1(2))^2 + (p2(3) - p1(3))^2);
     end
 end
