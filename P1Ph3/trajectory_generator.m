@@ -20,36 +20,31 @@ function [ desired_state ] = trajectory_generator(t, qn, map, path)
 % persistent map0 path0
 % map0 = map;
 % path0 = path;
-persistent waypoints0 traj_time d0 total_time eachPolyTime coeffsX coeffsY coeffsZ map0 path0 
+persistent waypoints0 traj_time total_time eachPolyTime coeffsX coeffsY coeffsZ map0 path0 
 persistent polyorder ordersystem numcoeffs
 
 if nargin > 2
     map0 = map;
     path0 = path;
-    averagevelocity = 2;
-    waypoints = refinePath3(path0{1}, map0);
-    %
-    figure(1)
-    hold on
-    %plot3(waypoints(:,1), waypoints(:,2), waypoints(:,3), 'LineWidth', 3)
-    plot3(waypoints(:,1), waypoints(:,2), waypoints(:,3), '*', 'MarkerSize', 5, 'LineWidth',2)
-    %
-    d = waypoints(2:end,:) - waypoints(1:end-1,:);
-    d0 = (sqrt(d(:,1).^2 + d(:,2).^2 + d(:,3).^2));
-    total_dist = sum(d0);
-    total_time = total_dist / averagevelocity;
-    waypoint_seg_len = sqrt(d0);
-    traj_time = cumsum(waypoint_seg_len);
-    traj_time = traj_time/traj_time(end);
-    traj_time = [0; traj_time]';
-    traj_time = traj_time*total_time;   
-    eachPolyTime = traj_time(1,2:end) - traj_time(1,1:end-1);
-    waypoints0 = waypoints;
-    num_waypoints = size(waypoints,1);
+    averagespeed = 2;
+    waypoints0 = refinePath3(path0{1}, map0);
+    
+    %%%% Plot selected waypoints
+    plot_refined_waypoints(waypoints0);
+    
+    %%%% get the total time for trajectory and also time for each
+    %%%% piecewise polynomial
+    [traj_time, total_time] = getTrajTime(waypoints0, averagespeed);
+    eachPolyTime = traj_time(1,2:end) - traj_time(1,1:end-1); 
+    
+    %%% Get the polynomial function that is fitted through the given
+    %%% waypoints
     polyorder = 5;
     ordersystem = 3;
     numcoeffs = polyorder + 1;
+    num_waypoints = size(waypoints0,1);
    [coeffsX,coeffsY,coeffsZ] = getCoeffs(polyorder,ordersystem,num_waypoints - 1,waypoints0, eachPolyTime);
+   
    % Utility function to visualize the polynomial fitted.
    CheckPolynomial(coeffsX,coeffsY, coeffsZ, numcoeffs, num_waypoints - 1);
 else

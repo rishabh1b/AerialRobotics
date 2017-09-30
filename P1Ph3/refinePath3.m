@@ -1,4 +1,13 @@
 function waypoints  = refinePath3(path, map)
+% Final implementation of the dijkstra path refinement for this project for
+% dynamically feasible trajectories. 
+% The function takes care of following things - 
+% 1. Checks line based collision between two waypoints and chooses other
+%    waypoint accordingly
+% 2. Checks for distance between two waypoints and if is greater than
+%    prespecified threshold of 3.5m it takes  one more waypoint in the middle
+% 3. Ideally selects one point in the middle of each line segement from
+%   dijkstra by checking the change in the slope of the line
 
 lastPoint = path(1,:);
 xy_res = map{5};
@@ -41,15 +50,12 @@ while i < num_points
     if found
         chosenIndex = floor((firstindex + secondindex) / 2);
         if chosenIndex ~= firstindex && isCollision(waypoints(end,:),path(chosenIndex,:))
-            %waypoints = [waypoints;path(firstindex,:)];
             addWaypoint(firstindex);
         elseif chosenIndex ~= firstindex            
-%             waypoints = [waypoints;path(chosenIndex,:)];
               addWaypoint(chosenIndex);
         elseif chosenIndex ~= 1 && ~firstIndexAdded
-            waypoints = [waypoints;path(firstindex,:)];
             firstIndexAdded = true;
-            lastIndexAdded = firstindex;
+            addWaypoint(firstindex)
         else
             firstIndexAdded = false;
         end

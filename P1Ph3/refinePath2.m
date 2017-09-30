@@ -1,5 +1,7 @@
 function waypoints  = refinePath2(path, map)
-
+% This approach relies on selecting points between changing slopes of line
+% Segments from Dijkstra.
+% This was not used in the final implementation, check refinePath3
 lastPoint = path(1,:);
 xy_res = map{5};
 z_res = map{6};

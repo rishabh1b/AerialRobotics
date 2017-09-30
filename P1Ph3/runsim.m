@@ -10,18 +10,18 @@ disp('Planning ...');
 % stop  = {[6.0  18.0-6 3.0]};
 %stop  = {[6.0  17 4.0]};
 
-% map = load_map('maps/map3.txt', 0.1, 1.0, 0.4);
-% start = {[0 2 5]};
-% stop  = {[20  3 4]};
+map = load_map('maps/map3.txt', 0.1, 1.0, 0.4);
+start = {[0 2 5]};
+stop  = {[20  3 4]};
 
 %start = {[1.5  2 2]};
 %start = {[1.5  2 2]};
 %stop  = {[7.8  2 4]};
 %stop  = {[17  2 2]};
 
-map = load_map('maps/map2.txt', 0.1, 1.0, 0.2);
-start = {[1 -4 1]};
-stop  = {[5 25 3]};
+% map = load_map('maps/map2.txt', 0.1, 1.0, 0.2);
+% start = {[1 -4 1]};
+% stop  = {[5 25 3]};
 
 nquad = length(start);
 for qn = 1:nquad
