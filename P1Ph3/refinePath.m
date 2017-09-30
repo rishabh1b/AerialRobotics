@@ -1,5 +1,9 @@
 function waypoints  = refinePath(path, map)
+% Select points from Dijkstra such that the straight line between two 
+% points just avoids collsions with any of the blocks
 
+% This function was not used in the final implementation
+% check refinePath2.m
 lastPoint = path(1,:);
 xy_res = map{5};
 z_res = map{6};

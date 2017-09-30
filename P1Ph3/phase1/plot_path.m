@@ -44,7 +44,7 @@ end
 hold on
 grid on
 % Plot Path
-plot3(path(:,1), path(:,2), path(:,3),'LineWidth', 2)
+plot3(path(:,1), path(:,2), path(:,3),'LineWidth', 0.5, 'LineStyle', '--')
 %% END YOUR CODE HERE %%
 
 end
