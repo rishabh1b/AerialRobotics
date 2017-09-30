@@ -12,9 +12,9 @@ function [F, M, trpy, drpy] = controller(qd, t, qn, params)
 psi_des = 0;
 
 % 
-kp = [2,2,11];
-kd = [2,2,4];
-kdAng = [3,3,2];
+kp = [10,10,11];
+kd = [4,4,4];
+kdAng = [5,5,3];
 kpAng = [1000,1000,1000];
 % Known Information to the controller
 state = qd{qn};

@@ -26,7 +26,8 @@ persistent polyorder ordersystem numcoeffs
 if nargin > 2
     map0 = map;
     path0 = path;
-    averagespeed = 2;
+    % For reduced error make this 2
+    averagespeed = 3;
     waypoints0 = refinePath3(path0{1}, map0);
     
     %%%% Plot selected waypoints
