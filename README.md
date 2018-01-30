@@ -1,8 +1,8 @@
 # AerialRobotics
+This repository has the code base for the projects accomplished as part of the course _CMSC828T:Planning, Perception and control for Aerial Robots_ at the University of Maryland 
 ### Trajectory Planning for Helical and Diamond Trajectories
 ---------------------------------------
 The folder P1Ph2 involves code to generate a diamond and helical trajectory and tuned controllers to achieve it.
-
 
 | Diamond Trajectory  | Helical Trajectory|
 | ------------------- | ----------------- |
