@@ -27,7 +27,7 @@ if nargin > 2
     map0 = map;
     path0 = path;
     % For reduced error make this 2
-    averagespeed = 3;
+    averagespeed = 2;
     waypoints0 = refinePath3(path0{1}, map0);
     
     %%%% Plot selected waypoints
