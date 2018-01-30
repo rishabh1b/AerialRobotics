@@ -8,3 +8,10 @@ The folder P1Ph2 involves code to generate a diamond and helical trajectory and 
 | ------------------- | ----------------- |
 | <img src="https://github.com/rishabh1b/AerialRobotics/blob/master/P1/P1Ph2/gifs/diamond.gif" alt="step" width="400">| <img src="https://github.com/rishabh1b/AerialRobotics/blob/master/P1/P1Ph2/gifs/helical.gif" alt="step" width="400"/>|
 
+### SLAM 
+---------------------------------------
+An implementtion of SLAM using April tags lying on the floor and different trajectories was implemented. The code is located in the folder P2
+
+ <img src="https://github.com/rishabh1b/AerialRobotics/blob/master/P2/plots/MountainXZ.jpg" alt="step" width="400"> <img src="https://github.com/rishabh1b/AerialRobotics/blob/master/P2/plots/StraightLineXY.jpg" alt="step" width="400"> 
+ <img src="https://github.com/rishabh1b/AerialRobotics/blob/master/P2/plots/mappingXY.jpg" alt="step" width="400"> <img src="https://github.com/rishabh1b/AerialRobotics/blob/master/P2/plots/slowcircleXY.jpg" alt="step" width="400"> 
+
